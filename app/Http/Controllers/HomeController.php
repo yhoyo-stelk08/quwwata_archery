@@ -1,12 +1,25 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-// Home page
-Route::get('/', function () {
-    return Inertia::render('Home', [
-        'bestSellers' => [
+class HomeController extends Controller
+{
+    public function index()
+    {
+        return Inertia::render('Home', [
+            'bestSellers' => $this->getBestSellers(),
+            'categories' => $this->getCategories(),
+            'heroSlides' => $this->getHeroSlides(),
+        ]);
+    }
+
+    private function getBestSellers()
+    {
+        // In a real application, this would fetch from database
+        return [
             [
                 'id' => 1,
                 'name' => 'Bora S+ / Ottoman Hybrid Bow',
@@ -49,8 +62,12 @@ Route::get('/', function () {
                     ['id' => 3, 'type' => 'Length', 'name' => '30"'],
                 ]
             ]
-        ],
-        'categories' => [
+        ];
+    }
+
+    private function getCategories()
+    {
+        return [
             [
                 'id' => 1,
                 'name' => 'Archery Equipment',
@@ -75,47 +92,49 @@ Route::get('/', function () {
                 'href' => '/products/equestrian',
                 'productCount' => 45
             ]
-        ]
-    ]);
-})->name('home');
+        ];
+    }
 
-// Product routes
-Route::prefix('products')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Products/Index');
-    })->name('products.index');
-    
-    Route::get('/category/{category}', function ($category) {
-        return Inertia::render('Products/Category', [
-            'category' => $category
-        ]);
-    })->name('products.category');
-    
-    Route::get('/{product}', function ($product) {
-        return Inertia::render('Products/Show', [
-            'product' => $product
-        ]);
-    })->name('products.show');
-});
-
-// Other pages
-Route::get('/about', function () {
-    return Inertia::render('About');
-})->name('about');
-
-Route::get('/contact', function () {
-    return Inertia::render('Contact');
-})->name('contact');
-
-Route::get('/search', function () {
-    return Inertia::render('Search', [
-        'query' => request('q', '')
-    ]);
-})->name('search');
-
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+    private function getHeroSlides()
+    {
+        return [
+            [
+                'id' => 1,
+                'badge' => 'New Collection',
+                'title' => 'Traditional Ottoman Bows',
+                'description' => 'Experience the power and precision of authentic Ottoman archery with our handcrafted traditional bows.',
+                'image' => '/images/hero-bow-1.jpg',
+                'primaryButton' => [
+                    'text' => 'Shop Now',
+                    'href' => '/products/bows'
+                ],
+                'secondaryButton' => [
+                    'text' => 'Learn More',
+                    'href' => '/about'
+                ]
+            ],
+            [
+                'id' => 2,
+                'badge' => 'Premium Quality',
+                'title' => 'Historical Clothing',
+                'description' => 'Feel the history on yourself with our authentic historical clothing collection.',
+                'image' => '/images/hero-clothing.jpg',
+                'primaryButton' => [
+                    'text' => 'Explore Collection',
+                    'href' => '/products/historical-clothes'
+                ]
+            ],
+            [
+                'id' => 3,
+                'badge' => 'Professional Grade',
+                'title' => 'Equestrian Equipment',
+                'description' => 'Complete your horseback archery experience with our professional-grade equipment.',
+                'image' => '/images/hero-equestrian.jpg',
+                'primaryButton' => [
+                    'text' => 'View Equipment',
+                    'href' => '/products/equestrian'
+                ]
+            ]
+        ];
+    }
+}

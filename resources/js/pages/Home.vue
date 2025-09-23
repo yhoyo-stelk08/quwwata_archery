@@ -1,0 +1,245 @@
+<template>
+    <EcommerceLayout>
+        <!-- Hero Carousel -->
+        <HeroCarousel :slides="heroSlides" />
+        
+        <!-- Best Sellers Section -->
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        The Best Sellers
+                    </h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Discover our most popular products loved by archery enthusiasts worldwide
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <ProductCard
+                        v-for="product in bestSellers"
+                        :key="product.id"
+                        :product="product"
+                    />
+                </div>
+                
+                <div class="text-center mt-8">
+                    <Link
+                        href="/products/best-sellers"
+                        class="inline-flex items-center bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+                    >
+                        View All Best Sellers
+                        <ArrowRightIcon class="h-5 w-5 ml-2" />
+                    </Link>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Categories Grid -->
+        <section class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        Shop by Category
+                    </h2>
+                    <p class="text-lg text-gray-600">
+                        Explore our complete range of archery and historical equipment
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <CategoryCard
+                        v-for="category in categories"
+                        :key="category.id"
+                        :category="category"
+                    />
+                </div>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
+                            <ShieldCheckIcon class="h-8 w-8 text-green-600" />
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                            Safe Shopping with 256 Bit SSL
+                        </h3>
+                        <p class="text-gray-600">
+                            Your personal and payment information is always secure with our advanced encryption.
+                        </p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4">
+                            <TruckIcon class="h-8 w-8 text-blue-600" />
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                            The Fastest and Safest Delivery
+                        </h3>
+                        <p class="text-gray-600">
+                            Get your orders delivered quickly and safely to your doorstep worldwide.
+                        </p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="flex items-center justify-center w-16 h-16 bg-amber-100 rounded-full mx-auto mb-4">
+                            <CreditCardIcon class="h-8 w-8 text-amber-600" />
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                            Global Currency Options
+                        </h3>
+                        <p class="text-gray-600">
+                            Shop in your preferred currency with multiple payment options available.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Company Story -->
+        <section class="py-16 bg-gradient-to-r from-amber-50 to-amber-100">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                            Quwwata Archery LTD
+                        </h2>
+                        <p class="text-lg text-gray-700 mb-6">
+                            Quwwata Archery LTD, which has been serving archery enthusiasts worldwide since 2017, 
+                            produces products with historical foundations using the highest quality materials.
+                        </p>
+                        <p class="text-lg text-gray-700 mb-8">
+                            With our Equestrian School which we opened in 2021, we provide professional level 
+                            Horseback Archery clinics to guests from around the world.
+                        </p>
+                        <Link
+                            href="/about"
+                            class="inline-flex items-center bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+                        >
+                            Learn More About Us
+                            <ArrowRightIcon class="h-5 w-5 ml-2" />
+                        </Link>
+                    </div>
+                    
+                    <div class="relative">
+                        <img
+                            src="/images/company-story.jpg"
+                            alt="Quwwata Archery Workshop"
+                            class="w-full h-auto rounded-lg shadow-lg"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </EcommerceLayout>
+</template>
+
+<script setup lang="ts">
+import { Head } from '@inertiajs/vue3';
+import EcommerceLayout from '../layouts/EcommerceLayout.vue';
+import HeroCarousel from '../components/HeroCarousel.vue';
+import ProductCard from '../components/ProductCard.vue';
+import CategoryCard from '../components/CategoryCard.vue';
+import { Link } from '@inertiajs/vue3';
+import {
+    ArrowRightIcon,
+    ShieldCheckIcon,
+    TruckIcon,
+    CreditCardIcon,
+} from 'lucide-vue-next';
+
+interface Props {
+    bestSellers: Array<any>;
+    categories: Array<any>;
+    heroSlides?: Array<any>;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    bestSellers: () => [
+        {
+            id: 1,
+            name: 'Bora S+ / Ottoman Hybrid Bow',
+            slug: 'bora-s-ottoman-hybrid-bow',
+            current_price: 330.00,
+            original_price: 380.00,
+            sale_percentage: 13,
+            rating: 4.8,
+            reviews_count: 24,
+            in_stock: true,
+            image: '/images/products/bora-bow.jpg',
+            variations: [
+                { id: 1, type: 'Draw Weight', name: '30-34 lbs' },
+                { id: 2, type: 'Draw Weight', name: '35-39 lbs' },
+                { id: 3, type: 'Draw Weight', name: '40-44 lbs' },
+            ]
+        },
+        {
+            id: 2,
+            name: 'Koç Nocks Small / 50 Pieces',
+            slug: 'koc-nocks-small-50-pieces',
+            current_price: 50.00,
+            rating: 4.9,
+            reviews_count: 18,
+            in_stock: true,
+            image: '/images/products/nocks.jpg',
+        },
+        {
+            id: 3,
+            name: 'Sungur Carbon Arrow, 400 spine, 12 Pieces',
+            slug: 'sungur-carbon-arrow-400-spine',
+            current_price: 108.00,
+            rating: 4.7,
+            reviews_count: 32,
+            in_stock: true,
+            image: '/images/products/carbon-arrows.jpg',
+            variations: [
+                { id: 1, type: 'Length', name: '26"' },
+                { id: 2, type: 'Length', name: '28"' },
+                { id: 3, type: 'Length', name: '30"' },
+            ]
+        },
+        {
+            id: 4,
+            name: 'War Arrow - Darb Point / 6 Pieces',
+            slug: 'war-arrow-darb-point',
+            current_price: 90.00,
+            rating: 4.6,
+            reviews_count: 15,
+            in_stock: true,
+            image: '/images/products/war-arrows.jpg',
+        }
+    ],
+    categories: () => [
+        {
+            id: 1,
+            name: 'Archery Equipment',
+            description: 'Traditional bows, arrows, and accessories',
+            image: '/images/categories/archery.jpg',
+            href: '/products/archery-equipment',
+            productCount: 125
+        },
+        {
+            id: 2,
+            name: 'Historical Clothes',
+            description: 'Feel the history on yourself',
+            image: '/images/categories/historical-clothes.jpg',
+            href: '/products/historical-clothes',
+            productCount: 85
+        },
+        {
+            id: 3,
+            name: 'Equestrian Equipment',
+            description: 'Professional horseback archery gear',
+            image: '/images/categories/equestrian.jpg',
+            href: '/products/equestrian',
+            productCount: 45
+        }
+    ],
+    heroSlides: () => []
+});
+</script>

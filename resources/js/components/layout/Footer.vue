@@ -60,12 +60,7 @@
                         </li>
                         <li>
                             <Link href="/products/historical-clothes" class="text-gray-300 hover:text-white transition-colors">
-                                Historical Clothes
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/products/equestrian" class="text-gray-300 hover:text-white transition-colors">
-                                Equestrian Equipment
+                               Other Equipments
                             </Link>
                         </li>
                     </ul>

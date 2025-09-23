@@ -183,21 +183,23 @@
                             </Link>
                         </div>
                     </li>
+                     <li>
+                        <Link href="/about" class="text-gray-700 hover:text-amber-600 font-medium">
+                            Arrows
+                        </Link>
+                    </li>
                     <li class="relative group">
                         <button class="text-gray-700 hover:text-amber-600 font-medium flex items-center">
-                            Arrows
+                            Other Equipments
                             <ChevronDownIcon class="h-4 w-4 ml-1" />
                         </button>
                          <!-- Dropdown -->
                         <div class="absolute left-0 mt-2 w-64 bg-white rounded-md shadow-lg py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                            <Link href="/products/bows" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                Arrows
-                            </Link>
                             <Link href="/products/arrows" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Quivers
                             </Link>
                             <Link href="/products/arrows" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                Accessories
+                                Archery Accessories
                             </Link>
                         </div>
                     </li>
@@ -265,12 +267,21 @@
                     </div>
                     
                     <!-- Arrows Mobile -->
+                     <Link
+                        href="/about"
+                        @click="closeMobileMenu"
+                        class="block text-gray-700 hover:text-amber-600 font-medium py-2"
+                    >
+                        Arrows
+                    </Link>
+
+                    <!-- Other Equipments -->
                     <div>
                         <button
                             @click="toggleMobileSubmenu('arrows')"
                             class="w-full flex items-center justify-between text-gray-700 hover:text-amber-600 font-medium py-2"
                         >
-                            Arrows
+                            Other Equipments
                             <ChevronDownIcon
                                 class="h-4 w-4 transition-transform duration-200"
                                 :class="openMobileSubmenu === 'arrows' ? 'rotate-180' : ''"
@@ -280,13 +291,6 @@
                             v-show="openMobileSubmenu === 'arrows'"
                             class="pl-4 space-y-2 mt-2"
                         >
-                            <Link
-                                href="/products/arrows"
-                                @click="closeMobileMenu"
-                                class="block text-gray-600 hover:text-amber-600 py-1"
-                            >
-                                Arrows
-                            </Link>
                             <Link
                                 href="/products/quivers"
                                 @click="closeMobileMenu"
@@ -299,7 +303,7 @@
                                 @click="closeMobileMenu"
                                 class="block text-gray-600 hover:text-amber-600 py-1"
                             >
-                                Accessories
+                                Archery Accessories
                             </Link>
                         </div>
                     </div>

@@ -11,11 +11,14 @@
                 <!-- Logo -->
                 <div class="flex items-center">
                     <Link href="/" class="flex items-center space-x-2">
-                        <div class="h-12 w-12 bg-amber-600 rounded-lg flex items-center justify-center">
-                            <span class="text-white font-bold text-xl">Q</span>
-                        </div>
-                        <span class="text-2xl font-bold text-amber-800 hidden sm:block">Quwwata Archery</span>
-                        <span class="text-xl font-bold text-amber-800 sm:hidden">Quwwata</span>
+                        <!-- Replace the old logo section with the new image -->
+                        <img 
+                            src="/images/logos/logo.png" 
+                            alt="Quwwata Traditional Archery Supply" 
+                            class="h-12 w-auto object-contain"
+                        />
+                        <!-- Optional: Keep text for smaller screens or remove entirely -->
+                        <span class="text-xl font-bold text-gray-800 hidden sm:block lg:hidden">Quwwata</span>
                     </Link>
                 </div>
                 

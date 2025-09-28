@@ -64,7 +64,7 @@
                             <Link href="/orders" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 My Orders
                             </Link>
-                            <Link href="/logout" method="post" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <Link :href="route('admin.logout')" method="post" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Logout
                             </Link>
                         </div>
@@ -72,9 +72,9 @@
                     
                     <!-- Login/Register for guests -->
                     <div v-else class="flex items-center space-x-2">
-                        <Link href="/login" class="text-gray-700 hover:text-amber-600 text-sm lg:text-base">Login</Link>
+                        <Link :href="route('login')" class="text-gray-700 hover:text-amber-600 text-sm lg:text-base">Login</Link>
                         <span class="text-gray-300">/</span>
-                        <Link href="/register" class="text-gray-700 hover:text-amber-600 text-sm lg:text-base">Sign Up</Link>
+                        <Link :href="route('register')" class="text-gray-700 hover:text-amber-600 text-sm lg:text-base">Sign Up</Link>
                     </div>
                     
                     <!-- Cart -->
@@ -229,7 +229,7 @@
                 <!-- Mobile Navigation -->
                 <nav class="space-y-4">
                     <Link
-                        href="/"
+                        :href="route('home')"
                         @click="closeMobileMenu"
                         class="block text-gray-700 hover:text-amber-600 font-medium py-2"
                     >
@@ -344,7 +344,7 @@
                                 My Orders
                             </Link>
                             <Link
-                                href="/logout"
+                                :href="route('admin.logout')"
                                 method="post"
                                 @click="closeMobileMenu"
                                 class="block text-gray-700 hover:text-amber-600 py-2"
@@ -354,14 +354,14 @@
                         </div>
                         <div v-else class="space-y-2">
                             <Link
-                                href="/login"
+                                :href="route('login')"
                                 @click="closeMobileMenu"
                                 class="block text-gray-700 hover:text-amber-600 py-2"
                             >
                                 Login
                             </Link>
                             <Link
-                                href="/register"
+                                :href="route('register')"
                                 @click="closeMobileMenu"
                                 class="block text-gray-700 hover:text-amber-600 py-2"
                             >

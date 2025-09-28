@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->max(255);
             $table->string('slug')->unique()->max(255);
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->text('description')->nullable();
             $table->decimal('current_price', 10, 2);
             $table->decimal('original_price', 10, 2)->nullable();
@@ -23,7 +24,14 @@ return new class extends Migration
             $table->float('rating')->default(0);
             $table->integer('reviews_count')->default(0);
             $table->integer('sale_percentage')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_featured')->default(false);
             $table->timestamps();
+            
+            // Indexes for better performance
+            $table->index(['category_id', 'is_active']);
+            $table->index(['is_featured', 'is_active']);
+            $table->index('rating');
         });
     }
 

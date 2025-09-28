@@ -5,9 +5,20 @@ use Inertia\Inertia;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Auth\AdminLoginController;
 
 // Home page - use HomeController
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Admin authentication routes
+Route::middleware('guest')->group(function () {
+    Route::get('/admin/login', [AdminLoginController::class, 'create'])->name('admin.login');
+    Route::post('/admin/login', [AdminLoginController::class, 'store'])->name('admin.login.store');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/admin/logout', [AdminLoginController::class, 'destroy'])->name('admin.logout');
+});
 
 // Category routes
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');

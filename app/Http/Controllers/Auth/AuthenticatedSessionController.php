@@ -19,13 +19,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(Request $request): Response
     {
-        return Inertia::render('auth/Login', [
+        return Inertia::render('auth/PublicLogin', [
             'canResetPassword' => Route::has('password.request'),
             'status' => $request->session()->get('status'),
         ]);
     }
 
-    /**
+        /**
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
@@ -45,7 +45,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Public login redirects to home page
+        return redirect()->route('home');
     }
 
     /**

@@ -45,8 +45,8 @@ class AdminLoginController extends Controller
 
         $request->session()->regenerate();
 
-        // Admin login always redirects to dashboard
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Admin login always redirects to admin dashboard
+        return redirect()->intended(route('admin.dashboard', absolute: false));
     }
 
     /**

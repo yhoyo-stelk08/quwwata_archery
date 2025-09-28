@@ -2,101 +2,22 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 
-// Home page
-Route::get('/', function () {
-    return Inertia::render('Home', [
-        'bestSellers' => [
-            [
-                'id' => 1,
-                'name' => 'Bora S+ / Ottoman Hybrid Bow',
-                'slug' => 'bora-s-ottoman-hybrid-bow',
-                'current_price' => 330.00,
-                'original_price' => 380.00,
-                'sale_percentage' => 13,
-                'rating' => 4.8,
-                'reviews_count' => 24,
-                'in_stock' => true,
-                'image' => '/images/products/bora-bow.jpg',
-                'variations' => [
-                    ['id' => 1, 'type' => 'Draw Weight', 'name' => '30-34 lbs'],
-                    ['id' => 2, 'type' => 'Draw Weight', 'name' => '35-39 lbs'],
-                    ['id' => 3, 'type' => 'Draw Weight', 'name' => '40-44 lbs'],
-                ]
-            ],
-            [
-                'id' => 2,
-                'name' => 'Koç Nocks Small / 50 Pieces',
-                'slug' => 'koc-nocks-small-50-pieces',
-                'current_price' => 50.00,
-                'rating' => 4.9,
-                'reviews_count' => 18,
-                'in_stock' => true,
-                'image' => '/images/products/nocks.jpg',
-            ],
-            [
-                'id' => 3,
-                'name' => 'Sungur Carbon Arrow, 400 spine, 12 Pieces',
-                'slug' => 'sungur-carbon-arrow-400-spine',
-                'current_price' => 108.00,
-                'rating' => 4.7,
-                'reviews_count' => 32,
-                'in_stock' => true,
-                'image' => '/images/products/carbon-arrows.jpg',
-                'variations' => [
-                    ['id' => 1, 'type' => 'Length', 'name' => '26"'],
-                    ['id' => 2, 'type' => 'Length', 'name' => '28"'],
-                    ['id' => 3, 'type' => 'Length', 'name' => '30"'],
-                ]
-            ]
-        ],
-        'categories' => [
-            [
-                'id' => 1,
-                'name' => 'Archery Equipment',
-                'description' => 'Traditional bows, arrows, and accessories',
-                'image' => '/images/categories/archery.jpg',
-                'href' => '/products/archery-equipment',
-                'productCount' => 125
-            ],
-            [
-                'id' => 2,
-                'name' => 'Historical Clothes',
-                'description' => 'Feel the history on yourself',
-                'image' => '/images/categories/historical-clothes.jpg',
-                'href' => '/products/historical-clothes',
-                'productCount' => 85
-            ],
-            [
-                'id' => 3,
-                'name' => 'Equestrian Equipment',
-                'description' => 'Professional horseback archery gear',
-                'image' => '/images/categories/equestrian.jpg',
-                'href' => '/products/equestrian',
-                'productCount' => 45
-            ]
-        ]
-    ]);
-})->name('home');
+// Home page - use HomeController
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Category routes
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/categories/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('/api/categories/navigation', [CategoryController::class, 'navigation'])->name('categories.navigation');
+Route::get('/api/categories/search', [CategoryController::class, 'search'])->name('categories.search');
 
 // Product routes
-Route::prefix('products')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Products/Index');
-    })->name('products.index');
-    
-    Route::get('/category/{category}', function ($category) {
-        return Inertia::render('Products/Category', [
-            'category' => $category
-        ]);
-    })->name('products.category');
-    
-    Route::get('/{product}', function ($product) {
-        return Inertia::render('Products/Show', [
-            'product' => $product
-        ]);
-    })->name('products.show');
-});
+Route::resource('products', ProductController::class);
+Route::get('/api/products/search', [ProductController::class, 'search'])->name('products.search');
 
 // Other pages
 Route::get('/about', function () {
@@ -116,6 +37,7 @@ Route::get('/search', function () {
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -32,6 +32,13 @@ class AdminLoginController extends Controller
     {
         $user = $request->validateCredentials();
 
+        // Check if user has admin privileges
+        if (!$user->isAdmin()) {
+            return back()->withErrors([
+                'email' => 'Access denied. Admin privileges required.',
+            ]);
+        }
+
         if (Features::enabled(Features::twoFactorAuthentication()) && $user->hasEnabledTwoFactorAuthentication()) {
             $request->session()->put([
                 'login.id' => $user->getKey(),

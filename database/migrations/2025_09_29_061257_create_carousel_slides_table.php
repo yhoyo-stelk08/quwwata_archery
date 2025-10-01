@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('badge')->nullable();
             $table->text('description');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->string('primary_button_text');
             $table->string('primary_button_url');
             $table->string('secondary_button_text')->nullable();

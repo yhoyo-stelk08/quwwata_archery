@@ -65,6 +65,19 @@
                                 <Image class="h-4 w-4 mr-2" />
                                 Images
                             </Link>
+
+                            <Link
+                                :href="route('admin.carousel-slides.index')"
+                                :class="[
+                                    'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors',
+                                    isCurrentRoute('admin.carousel-slides.*')
+                                        ? 'border-amber-500 text-gray-900'
+                                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                                ]"
+                            >
+                                <Presentation class="h-4 w-4 mr-2" />
+                                Hero Slides
+                            </Link>
                         </div>
                     </div>
 
@@ -165,6 +178,18 @@
                         Categories
                     </Link>
                     <Link
+                        :href="route('admin.carousel-slides.index')"
+                        :class="[
+                            'block pl-3 pr-4 py-2 border-l-4 text-base font-medium',
+                            isCurrentRoute('admin.carousel-slides.*')
+                                ? 'bg-amber-50 border-amber-500 text-amber-700'
+                                : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300'
+                        ]"
+                        @click="mobileMenuOpen = false"
+                    >
+                        Carousel Slides
+                    </Link>
+                    <Link
                         :href="route('admin.product-images.index')"
                         :class="[
                             'block pl-3 pr-4 py-2 border-l-4 text-base font-medium',
@@ -228,6 +253,7 @@ import {
     Package,
     FolderOpen,
     Image,
+    Presentation,
     ExternalLink,
     User,
     Settings,

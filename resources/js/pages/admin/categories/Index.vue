@@ -128,8 +128,13 @@
                                         </Link>
                                         <button
                                             @click="deleteCategory(category)"
-                                            class="text-red-600 hover:text-red-900 p-1"
-                                            title="Delete"
+                                            :class="[
+                                                'p-1 transition-colors',
+                                                category.products_count > 0
+                                                    ? 'text-gray-300 cursor-not-allowed'
+                                                    : 'text-red-600 hover:text-red-900 cursor-pointer'
+                                            ]"
+                                            :title="category.products_count > 0 ? 'Cannot delete category with products' : 'Delete'"
                                             :disabled="category.products_count > 0"
                                         >
                                             <Trash2 class="h-4 w-4" />
@@ -168,8 +173,17 @@
             aria-modal="true"
         >
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <!-- Background overlay -->
+                <div 
+                    class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                    @click="showDeleteModal = false"
+                ></div>
+                
+                <!-- This element is to trick the browser into centering the modal contents. -->
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                
+                <!-- Modal panel -->
+                <div class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full z-50">
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div class="sm:flex sm:items-start">
                             <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -244,6 +258,9 @@ const showDeleteModal = ref(false);
 const categoryToDelete = ref<Category | null>(null);
 
 const deleteCategory = (category: Category) => {
+    console.log('Delete button clicked for category:', category.name);
+    console.log('Products count:', category.products_count);
+    
     if (category.products_count > 0) {
         alert('Cannot delete category that has products.');
         return;
@@ -251,14 +268,21 @@ const deleteCategory = (category: Category) => {
     
     categoryToDelete.value = category;
     showDeleteModal.value = true;
+    console.log('Modal should be shown now');
 };
 
 const confirmDelete = () => {
+    console.log('Confirm delete clicked');
     if (categoryToDelete.value) {
+        console.log('Deleting category:', categoryToDelete.value.name);
         router.delete(route('admin.categories.destroy', categoryToDelete.value.id), {
             onSuccess: () => {
+                console.log('Delete successful');
                 showDeleteModal.value = false;
                 categoryToDelete.value = null;
+            },
+            onError: (errors) => {
+                console.error('Delete failed:', errors);
             },
         });
     }

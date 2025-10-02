@@ -1,8 +1,18 @@
+<!-- filepath: resources/js/components/HeroCarouselNew.vue -->
 <template>
-    <section class="relative min-h-[600px] md:h-[700px] overflow-hidden bg-gradient-to-r from-amber-50 to-amber-100">
+    <section class="relative h-[600px] md:h-[700px] overflow-hidden">
+        <!-- Loading State -->
+        <div v-if="slides.length === 0" class="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-amber-50 to-amber-100">
+            <div class="text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
+                <p class="text-gray-600">Loading slides...</p>
+            </div>
+        </div>
+
         <!-- Carousel Container -->
         <div 
-            class="relative w-full h-full"
+            v-else
+            class="relative w-full h-full min-h-[600px] md:min-h-[700px]"
             @touchstart="handleTouchStart"
             @touchend="handleTouchEnd"
         >
@@ -11,91 +21,108 @@
                 v-for="(slide, index) in slides"
                 :key="slide.id"
                 :class="[
-                    'absolute inset-0 transition-all duration-500 ease-in-out',
-                    index === currentSlide ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'
+                    'absolute inset-0 transition-opacity duration-1000',
+                    currentSlide === index ? 'opacity-100' : 'opacity-0'
                 ]"
             >
-                <div class="container mx-auto px-4 h-full flex items-center">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center w-full py-12 sm:py-16 lg:py-0">
-                        <!-- Content -->
-                        <div class="space-y-6 text-center lg:text-left order-2 lg:order-1 px-4 lg:px-0">
+                <!-- Full-width background image with mobile fallback -->
+                <div class="absolute inset-0">
+                    <!-- Main image element for better mobile support -->
+                    <img
+                        :src="slide.image_url"
+                        :alt="slide.title"
+                        class="w-full h-full object-cover"
+                        @error="handleImageError($event, slide)"
+                        @load="handleImageLoad($event, slide)"
+                    />
+                    <!-- Dark overlay for better text readability -->
+                    <div class="absolute inset-0 bg-black/40"></div>
+                </div>
+
+                <!-- Content overlay -->
+                <div class="relative z-10 container mx-auto px-4 h-full flex items-center justify-center">
+                    <div class="max-w-2xl text-center w-full flex flex-col items-center">
+                        <div class="space-y-6">
                             <div class="space-y-4">
-                                <span class="inline-block bg-amber-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                                <span 
+                                    v-if="slide.badge"
+                                    class="inline-block bg-amber-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg"
+                                >
                                     {{ slide.badge }}
                                 </span>
-                                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
+                                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight drop-shadow-lg">
                                     {{ slide.title }}
                                 </h1>
                             </div>
-                            <p class="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+                            <p class="text-lg sm:text-xl md:text-2xl text-white/90 max-w-xl mx-auto leading-relaxed drop-shadow-md">
                                 {{ slide.description }}
                             </p>
-                            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start pt-2">
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                                 <Link
-                                    :href="slide.primaryButton.href"
-                                    class="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3.5 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base"
+                                    :href="slide.primary_button_url"
+                                    class="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 text-base sm:text-lg shadow-xl hover:shadow-2xl transform hover:scale-105"
                                 >
-                                    <span>{{ slide.primaryButton.text }}</span>
-                                    <ArrowRightIcon class="h-4 w-4 sm:h-5 sm:w-5" />
+                                    <span>{{ slide.primary_button_text }}</span>
+                                    <ArrowRightIcon class="h-5 w-5" />
                                 </Link>
                                 <Link
-                                    v-if="slide.secondaryButton"
-                                    :href="slide.secondaryButton.href"
-                                    class="border-2 border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white font-semibold py-3.5 px-6 rounded-lg transition-colors duration-200 text-center text-sm sm:text-base"
+                                    v-if="slide.secondary_button_text && slide.secondary_button_url"
+                                    :href="slide.secondary_button_url"
+                                    class="border-2 border-white text-white hover:bg-white hover:text-gray-900 font-semibold py-4 px-8 rounded-lg transition-all duration-200 text-center text-base sm:text-lg shadow-xl backdrop-blur-sm"
                                 >
-                                    {{ slide.secondaryButton.text }}
+                                    {{ slide.secondary_button_text }}
                                 </Link>
                             </div>
                         </div>
-                        
-                        <!-- Image -->
-                        <div class="relative order-1 lg:order-2 px-4 lg:px-0">
-                            <div class="aspect-[4/3] sm:aspect-square lg:aspect-[4/3] relative overflow-hidden rounded-2xl max-w-sm sm:max-w-md mx-auto lg:max-w-none shadow-2xl">
-                                <img
-                                    :src="slide.image"
-                                    :alt="slide.title"
-                                    class="w-full h-full object-cover"
-                                />
-                                <!-- Overlay for better contrast -->
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent"></div>
-                            </div>
-                            
-                            <!-- Floating Elements -->
-                            <div class="absolute -top-4 -right-4 w-16 sm:w-20 h-16 sm:h-20 bg-amber-200 rounded-full blur-xl opacity-70"></div>
-                            <div class="absolute -bottom-4 -left-4 w-12 sm:w-16 h-12 sm:h-16 bg-amber-300 rounded-full blur-lg opacity-60"></div>
+                    </div>
+                </div>
+
+                <!-- Fallback when image fails to load -->
+                <div 
+                    v-if="slide.imageError" 
+                    class="absolute inset-0 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center z-5"
+                >
+                    <div class="text-center p-6">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-amber-300 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z" />
+                            </svg>
                         </div>
+                        <p class="text-amber-700 font-medium">{{ slide.title }}</p>
+                        <p class="text-amber-600 text-sm">Image unavailable</p>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Navigation Dots -->
-        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        <div v-if="slides.length > 1" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
             <button
                 v-for="(slide, index) in slides"
                 :key="`dot-${slide.id}`"
                 @click="goToSlide(index)"
                 :class="[
-                    'w-3 h-3 rounded-full transition-all duration-300',
-                    index === currentSlide 
-                        ? 'bg-white shadow-lg scale-110' 
-                        : 'bg-white/50 hover:bg-white/70'
+                    'w-3 h-3 rounded-full transition-all duration-200',
+                    currentSlide === index
+                        ? 'bg-white scale-110'
+                        : 'bg-white/50 hover:bg-white/75'
                 ]"
-                :aria-label="`Go to slide ${index + 1}`"
             ></button>
         </div>
-        
-        <!-- Navigation Arrows - Hidden on mobile, visible on tablet+ -->
+
+        <!-- Navigation Arrows -->
         <button
+            v-if="slides.length > 1"
             @click="prevSlide"
-            class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 hidden md:block"
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-200 hover:scale-110 z-20 hidden md:block"
             aria-label="Previous slide"
         >
             <ChevronLeftIcon class="h-6 w-6" />
         </button>
         <button
+            v-if="slides.length > 1"
             @click="nextSlide"
-            class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 hidden md:block"
+            class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-200 hover:scale-110 z-20 hidden md:block"
             aria-label="Next slide"
         >
             <ChevronRightIcon class="h-6 w-6" />
@@ -104,89 +131,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import {
-    ArrowRightIcon,
-    ChevronLeftIcon,
-    ChevronRightIcon,
-} from 'lucide-vue-next';
+import { ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-vue-next';
+import { ref, onMounted, onUnmounted } from 'vue';
 
-interface SlideButton {
-    text: string;
-    href: string;
-}
-
-interface Slide {
+interface CarouselSlide {
     id: number;
     title: string;
     description: string;
-    badge: string;
-    image: string;
-    primaryButton: SlideButton;
-    secondaryButton?: SlideButton;
+    badge: string | null;
+    image_url: string;
+    primary_button_text: string;
+    primary_button_url: string;
+    secondary_button_text: string | null;
+    secondary_button_url: string | null;
+    imageError?: boolean;
 }
 
-interface Props {
-    slides?: Slide[];
-    autoPlay?: boolean;
-    autoPlayInterval?: number;
-}
+const props = defineProps<{
+    slides: CarouselSlide[];
+}>();
 
-const props = withDefaults(defineProps<Props>(), {
-    autoPlay: true,
-    autoPlayInterval: 5000,
-    slides: () => [
-        {
-            id: 1,
-            badge: 'New Collection',
-            title: 'Traditional Ottoman Bows',
-            description: 'Experience the power and precision of authentic Ottoman archery with our handcrafted traditional bows.',
-            image: '/images/hero-bow-1.jpg',
-            primaryButton: {
-                text: 'Shop Now',
-                href: '/products/bows'
-            },
-            secondaryButton: {
-                text: 'Learn More',
-                href: '/about'
-            }
-        },
-        {
-            id: 2,
-            badge: 'Premium Quality',
-            title: 'Historical Clothing',
-            description: 'Feel the history on yourself with our authentic historical clothing collection.',
-            image: '/images/hero-clothing.jpg',
-            primaryButton: {
-                text: 'Explore Collection',
-                href: '/products/historical-clothes'
-            }
-        },
-        {
-            id: 3,
-            badge: 'Professional Grade',
-            title: 'Equestrian Equipment',
-            description: 'Complete your horseback archery experience with our professional-grade equipment.',
-            image: '/images/hero-equestrian.jpg',
-            primaryButton: {
-                text: 'View Equipment',
-                href: '/products/equestrian'
-            }
-        }
-    ]
-});
-
-// State
 const currentSlide = ref(0);
-let autoPlayTimer: number | null = null;
+let autoplayInterval: number | null = null;
 
-// Methods
-const goToSlide = (index: number) => {
-    currentSlide.value = index;
-    resetAutoPlay();
+// Image error handling
+const handleImageError = (event: Event, slide: CarouselSlide) => {
+    console.error('Failed to load image:', slide.image_url);
+    slide.imageError = true;
 };
 
+const handleImageLoad = (event: Event, slide: CarouselSlide) => {
+    console.log('Image loaded successfully:', slide.image_url);
+    slide.imageError = false;
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'block';
+};
+
+// Slide navigation
 const nextSlide = () => {
     currentSlide.value = (currentSlide.value + 1) % props.slides.length;
     resetAutoPlay();
@@ -197,18 +179,24 @@ const prevSlide = () => {
     resetAutoPlay();
 };
 
+const goToSlide = (index: number) => {
+    currentSlide.value = index;
+    resetAutoPlay();
+};
+
+// Auto-play functionality
 const startAutoPlay = () => {
-    if (props.autoPlay && props.slides.length > 1) {
-        autoPlayTimer = setInterval(() => {
-            nextSlide();
-        }, props.autoPlayInterval);
-    }
+    if (props.slides.length <= 1) return;
+    
+    autoplayInterval = setInterval(() => {
+        nextSlide();
+    }, 5000) as number;
 };
 
 const stopAutoPlay = () => {
-    if (autoPlayTimer) {
-        clearInterval(autoPlayTimer);
-        autoPlayTimer = null;
+    if (autoplayInterval) {
+        clearInterval(autoplayInterval);
+        autoplayInterval = null;
     }
 };
 

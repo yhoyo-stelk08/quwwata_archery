@@ -1,7 +1,7 @@
 <template>
     <EcommerceLayout>
         <!-- Hero Carousel -->
-        <HeroCarousel :slides="heroSlides" />
+        <HeroCarousel :slides="carouselSlides" />
         
         <!-- Best Sellers Section -->
         <section class="py-16 bg-white">
@@ -153,93 +153,52 @@ import {
     CreditCardIcon,
 } from 'lucide-vue-next';
 
-interface Props {
-    bestSellers: Array<any>;
-    categories: Array<any>;
-    heroSlides?: Array<any>;
+interface CarouselSlide {
+    id: number;
+    title: string;
+    description: string;
+    badge: string | null;
+    image_url: string;
+    primary_button_text: string;
+    primary_button_url: string;
+    secondary_button_text: string | null;
+    secondary_button_url: string | null;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-    bestSellers: () => [
-        {
-            id: 1,
-            name: 'Bora S+ / Ottoman Hybrid Bow',
-            slug: 'bora-s-ottoman-hybrid-bow',
-            current_price: 330.00,
-            original_price: 380.00,
-            sale_percentage: 13,
-            rating: 4.8,
-            reviews_count: 24,
-            in_stock: true,
-            image: '/images/products/bora-bow.jpg',
-            variations: [
-                { id: 1, type: 'Draw Weight', name: '30-34 lbs' },
-                { id: 2, type: 'Draw Weight', name: '35-39 lbs' },
-                { id: 3, type: 'Draw Weight', name: '40-44 lbs' },
-            ]
-        },
-        {
-            id: 2,
-            name: 'Koç Nocks Small / 50 Pieces',
-            slug: 'koc-nocks-small-50-pieces',
-            current_price: 50.00,
-            rating: 4.9,
-            reviews_count: 18,
-            in_stock: true,
-            image: '/images/products/nocks.jpg',
-        },
-        {
-            id: 3,
-            name: 'Sungur Carbon Arrow, 400 spine, 12 Pieces',
-            slug: 'sungur-carbon-arrow-400-spine',
-            current_price: 108.00,
-            rating: 4.7,
-            reviews_count: 32,
-            in_stock: true,
-            image: '/images/products/carbon-arrows.jpg',
-            variations: [
-                { id: 1, type: 'Length', name: '26"' },
-                { id: 2, type: 'Length', name: '28"' },
-                { id: 3, type: 'Length', name: '30"' },
-            ]
-        },
-        {
-            id: 4,
-            name: 'War Arrow - Darb Point / 6 Pieces',
-            slug: 'war-arrow-darb-point',
-            current_price: 90.00,
-            rating: 4.6,
-            reviews_count: 15,
-            in_stock: true,
-            image: '/images/products/war-arrows.jpg',
-        }
-    ],
-    categories: () => [
-        {
-            id: 1,
-            name: 'Archery Equipment',
-            description: 'Traditional bows, arrows, and accessories',
-            image: '/images/categories/archery.jpg',
-            href: '/products/archery-equipment',
-            productCount: 125
-        },
-        {
-            id: 2,
-            name: 'Historical Clothes',
-            description: 'Feel the history on yourself',
-            image: '/images/categories/historical-clothes.jpg',
-            href: '/products/historical-clothes',
-            productCount: 85
-        },
-        {
-            id: 3,
-            name: 'Equestrian Equipment',
-            description: 'Professional horseback archery gear',
-            image: '/images/categories/equestrian.jpg',
-            href: '/products/equestrian',
-            productCount: 45
-        }
-    ],
-    heroSlides: () => []
+interface Product {
+    id: number;
+    name: string;
+    slug: string;
+    current_price: number;
+    original_price?: number;
+    sale_percentage?: number;
+    rating: number;
+    reviews_count: number;
+    in_stock: boolean;
+    image: string;
+    variations?: Array<{
+        id: number;
+        type: string;
+        name: string;
+    }>;
+}
+
+interface Category {
+    id: number;
+    name: string;
+    description: string;
+    image: string;
+    href: string;
+    productCount: number;
+}
+
+const props = withDefaults(defineProps<{
+    carouselSlides?: CarouselSlide[];
+    bestSellers?: Product[];
+    categories?: Category[];
+}>(), {
+    carouselSlides: () => [],
+    bestSellers: () => [],
+    categories: () => []
 });
 </script>

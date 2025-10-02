@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             AdminUserSeeder::class,
+            CarouselSlideSeeder::class,
             CategorySeeder::class,
             ProductSeeder::class,
         ]);

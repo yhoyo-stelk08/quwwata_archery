@@ -6,16 +6,96 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\product as Product;
 use App\Models\category as Category;
+use App\Models\carousel_slide as CarouselSlide;
 use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
     public function index()
     {
+        // return Inertia::render('Home', [
+        //     'heroSlides' => $this->getHeroSlides(),
+        //     'bestSellers' => $this->getBestSellers(),
+        //     'categories' => $this->getCategories(),
+        // ]);
+        // Get carousel slides
+        $carouselSlides = CarouselSlide::getActiveSlides()
+            ->map(function ($slide) {
+                return [
+                    'id' => $slide->id,
+                    'title' => $slide->title,
+                    'description' => $slide->description,
+                    'badge' => $slide->badge,
+                    'image_url' => $slide->image_url,
+                    'primary_button_text' => $slide->primary_button_text,
+                    'primary_button_url' => $slide->primary_button_url,
+                    'secondary_button_text' => $slide->secondary_button_text,
+                    'secondary_button_url' => $slide->secondary_button_url,
+                ];
+            });
+
+        // Get featured products (best sellers)
+        $bestSellers = Product::with(['primaryImage', 'images', 'category'])
+            ->where('is_active', true)
+            ->where('is_featured', true)
+            ->where('in_stock', true)
+            ->orderBy('reviews_count', 'desc') // Order by most reviewed (popular)
+            ->orderBy('rating', 'desc') // Then by highest rated
+            ->take(8)
+            ->get()
+            ->map(function ($product) {
+                // Try to get primary image first, then first image, then fallback to placeholder
+                $imageUrl = null;
+                if ($product->primaryImage) {
+                    $imageUrl = $product->primaryImage->image_url;
+                } elseif ($product->images->isNotEmpty()) {
+                    $imageUrl = $product->images->first()->image_url;
+                } else {
+                    $imageUrl = 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&auto=format';
+                }
+                
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'slug' => $product->slug,
+                    'image' => $imageUrl, // For ProductCard component
+                    'current_price' => $product->current_price,
+                    'original_price' => $product->original_price,
+                    'rating' => $product->rating ?? 4.5,
+                    'reviews_count' => $product->reviews_count ?? 0,
+                    'in_stock' => $product->in_stock, // Add in_stock field
+                    'stock' => $product->stock ?? 0, // Add stock count
+                    'category' => $product->category ? [
+                        'name' => $product->category->name,
+                        'slug' => $product->category->slug,
+                    ] : null,
+                    'is_on_sale' => $product->is_on_sale,
+                    'sale_percentage' => $product->sale_percentage,
+                ];
+            });
+
+        // Get categories (existing code)
+        $categories = Category::where('is_active', true)
+            ->whereNull('parent_id')
+            ->orderBy('sort_order')
+            ->take(6)
+            ->get()
+            ->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'slug' => $category->slug,
+                    'description' => $category->description,
+                    'image' => $category->image ? asset('storage/' . $category->image) : null,
+                    'href' => route('categories.show', $category->slug),
+                    'productCount' => $category->products()->where('is_active', true)->count(),
+                ];
+            });
+
         return Inertia::render('Home', [
-            'heroSlides' => $this->getHeroSlides(),
-            'bestSellers' => $this->getBestSellers(),
-            'categories' => $this->getCategories(),
+            'carouselSlides' => $carouselSlides,
+            'bestSellers' => $bestSellers,
+            'categories' => $categories,
         ]);
     }
 
